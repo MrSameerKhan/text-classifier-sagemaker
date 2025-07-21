@@ -15,17 +15,23 @@ pipeline {
     }
 
     stage('Build & Push to ECR') {
-      steps {
-        sh '''
-          aws ecr describe-repositories --repository-names text-classifier || \
-            aws ecr create-repository --repository-name text-classifier
+        steps {
+            sh '''
+            # Ensure the repo exists
+            aws ecr describe-repositories --repository-names text-classifier || \
+                aws ecr create-repository --repository-name text-classifier
 
-          echo $AWS_CREDS_PSW | docker login -u AWS --password-stdin ${ECR_REPO}
-          docker build -t ${ECR_REPO}:${IMAGE_TAG} .
-          docker push ${ECR_REPO}:${IMAGE_TAG}
-        '''
-      }
-    }
+            # Login using the ECR authorization token
+            aws ecr get-login-password --region ${AWS_REGION} \
+                | docker login --username AWS --password-stdin ${ECR_REPO}
+
+            # Build and push
+            docker build -t ${ECR_REPO}:${IMAGE_TAG} .
+            docker push ${ECR_REPO}:${IMAGE_TAG}
+            '''
+        }
+}
+
 
     stage('Deploy to SageMaker') {
       steps {
