@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    AWS_REGION = "ap-south-1"
+    AWS_REGION = "ap-south-2"
     ACCOUNT_ID = "570617927874"  // ← your AWS account ID
     ECR_REPO   = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/text-classifier"
     IMAGE_TAG  = "latest"
