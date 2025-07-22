@@ -1,6 +1,6 @@
 import boto3, json
 
-runtime = boto3.client("sagemaker-runtime", region_name="ap-south-1")
+runtime = boto3.client("sagemaker-runtime", region_name="ap-south-2")
 
 resp = runtime.invoke_endpoint(
     EndpointName="text-classifier-endpoint",
